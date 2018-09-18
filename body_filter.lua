@@ -1,18 +1,24 @@
-local storage = require 'kong.plugins.globo-cache.storage'
+local Storage = require 'kong.plugins.globo-cache.storage'
 local validators = require 'kong.plugins.globo-cache.validators'
-local cache = require 'kong.plugins.globo-cache.cache'
+local Cache = require 'kong.plugins.globo-cache.cache'
 
 local _M = {}
+
+local storage = Storage:new()
+local cache = Cache:new()
 
 function _M.execute(config)
     local chunk, eof = ngx.arg[1], ngx.arg[2]
 
-    storage:new(config)
     storage:set_config(config)
+    cache:set_config(config)
 
+    if not cache:enabled() then
+        return
+    end
     if eof then
         local body = table.concat(ngx.ctx.rt_body_chunks)
-        local cache_key = cache.generate_cache_key(config.vary_headers)
+        local cache_key = cache:generate_cache_key()
         ngx.arg[1] = body
         if validators.check_response_code(config.response_code, ngx.status) and
            validators.check_request_method(config.request_method) then
@@ -20,7 +26,7 @@ function _M.execute(config)
             storage:set(cache_key, {
                 headers = ngx.ctx.headers,
                 content = body
-            })
+            }, cache:cache_ttl())
         end
     else
         ngx.ctx.rt_body_chunks[ngx.ctx.rt_body_chunk_number] = chunk

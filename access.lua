@@ -1,16 +1,24 @@
-local storage = require 'kong.plugins.globo-cache.storage'
+local Storage = require 'kong.plugins.globo-cache.storage'
 local validators = require 'kong.plugins.globo-cache.validators'
-local cache = require 'kong.plugins.globo-cache.cache'
+local Cache = require 'kong.plugins.globo-cache.cache'
 
 local _M = {}
 
+local storage = Storage:new()
+local cache = Cache:new()
+
 function _M.execute(config)
-    local cache_key = cache.generate_cache_key(config.vary_headers)
+    storage:set_config(config)
+    cache:set_config(config)
+
+    if not cache:enabled() then
+        return
+    end
+
+    local cache_key = cache:generate_cache_key()
+
     ngx.ctx.rt_body_chunks = {}
     ngx.ctx.rt_body_chunk_number = 1
-
-    storage:new()
-    storage:set_config(config)
 
     if validators.check_request_method(config.request_method) then
         local cached_value, err = storage:get(cache_key)

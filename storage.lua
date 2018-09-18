@@ -53,7 +53,7 @@ function _M:close()
     return self.red
 end
 
-function _M:set(key, value)
+function _M:set(key, value, expire_time)
     ngx.timer.at(0, function(premature)
         self:connect()
         ngx.log(ngx.DEBUG, "[storage] set key: ", key)
@@ -62,7 +62,6 @@ function _M:set(key, value)
             ngx.log(ngx.ERR, "failed to set cache: ", err)
             return
         end
-        local expire_time = self.config.cache_ttl * 60
         self.red:expire(key, expire_time)
         self:close()
     end)
