@@ -15,8 +15,13 @@ function _M.execute(config)
         local cached_value, err = storage:get(cache_key)
         if cached_value and cached_value ~= ngx.null then
             ngx.log(ngx.DEBUG, "hit: ", cache_key)
+            for header, value in pairs(cached_value.headers) do
+                if string.upper(header) ~= 'CONNECTION' then
+                    ngx.header[header] = value
+                end
+            end
             ngx.header['X-Cache'] = 'HIT'
-            ngx.print(cached_value)
+            ngx.print(cached_value.content)
             ngx.exit(200)
         else
             ngx.log(ngx.DEBUG, "miss: ", cache_key)

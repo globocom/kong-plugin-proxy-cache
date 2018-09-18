@@ -16,7 +16,10 @@ function _M.execute(config)
         if validators.check_response_code(config.response_code, ngx.status) and
            validators.check_request_method(config.request_method) then
             ngx.log(ngx.DEBUG, "updating cache: ", cache_key)
-            storage:set(cache_key, body)
+            storage:set(cache_key, {
+                headers = ngx.ctx.headers,
+                content = body
+            })
         end
     else
         ngx.ctx.rt_body_chunks[ngx.ctx.rt_body_chunk_number] = chunk

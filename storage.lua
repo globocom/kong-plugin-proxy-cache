@@ -1,6 +1,27 @@
 local redis = require "resty.redis"
+local cjson_decode = require("cjson").decode
+local cjson_encode = require("cjson").encode
 
 local _M = {}
+
+local function json_decode(json)
+    if json then
+        local status, res = pcall(cjson_decode, json)
+        if status then
+        return res
+        end
+    end
+end
+
+local function json_encode(table)
+    if table then
+        local status, res = pcall(cjson_encode, table)
+        if status then
+        return res
+        end
+    end
+end
+
 
 function _M:new(o)
     o = o or {}
@@ -37,7 +58,7 @@ function _M:set(key, value)
     ngx.timer.at(0, function(premature)
         self:connect()
         ngx.log(ngx.DEBUG, "[storage] set key: ", key)
-        local ok, err = self.red:set(key, value)
+        local ok, err = self.red:set(key, json_encode(value))
         if not ok then
             ngx.log(ngx.ERR, "failed to set cache: ", err)
             return
@@ -57,7 +78,7 @@ function _M:get(key)
         return nil, err
     end
     self:close()
-    return cached_value
+    return json_decode(cached_value)
 end
 
 
