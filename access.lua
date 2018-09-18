@@ -1,10 +1,11 @@
 local storage = require 'kong.plugins.globo-cache.storage'
 local validators = require 'kong.plugins.globo-cache.validators'
+local cache = require 'kong.plugins.globo-cache.cache'
 
 local _M = {}
 
 function _M.execute(config)
-    local cache_key = ngx.var.request_uri
+    local cache_key = cache.generate_cache_key(config.vary_headers)
     ngx.ctx.rt_body_chunks = {}
     ngx.ctx.rt_body_chunk_number = 1
 

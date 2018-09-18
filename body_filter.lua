@@ -1,5 +1,6 @@
 local storage = require 'kong.plugins.globo-cache.storage'
 local validators = require 'kong.plugins.globo-cache.validators'
+local cache = require 'kong.plugins.globo-cache.cache'
 
 local _M = {}
 
@@ -11,7 +12,7 @@ function _M.execute(config)
 
     if eof then
         local body = table.concat(ngx.ctx.rt_body_chunks)
-        local cache_key = ngx.var.request_uri
+        local cache_key = cache.generate_cache_key(config.vary_headers)
         ngx.arg[1] = body
         if validators.check_response_code(config.response_code, ngx.status) and
            validators.check_request_method(config.request_method) then
