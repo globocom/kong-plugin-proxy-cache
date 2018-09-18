@@ -34,7 +34,7 @@ return {
             type = "table",
             schema = {
                 fields = {
-                    host = {type = "url", required = true},
+                    host = {type = "string", required = true},
                     port = {
                         type = "number",
                         func = server_port,
