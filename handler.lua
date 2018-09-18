@@ -5,7 +5,7 @@ local header_filter = require 'kong.plugins.globo-cache.header_filter'
 
 local ProxyCaching = BasePlugin:extend()
 
-ProxyCaching.PRIORITY = 1005
+ProxyCaching.PRIORITY = 100
 ProxyCaching.VERSION = '0.1.0'
 
 function ProxyCaching:new()
