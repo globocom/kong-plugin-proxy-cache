@@ -40,7 +40,10 @@ return {
                         func = server_port,
                         default = 6379,
                         required = true
-                    }
+                    },
+                    timeout = {type = "number", required = true, default = 2000},
+                    password = {type = "string", required = false},
+                    database = {type = "number", required = true, default = 0}
                 }
             }
         }
