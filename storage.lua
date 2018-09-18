@@ -35,12 +35,22 @@ end
 
 function _M:connect()
     self.red = redis:new()
-    self.red:set_timeout(1000)
-
-    local ok, err = self.red:connect("kong-cache", 6379)
+    self.red:set_timeout(self.config.redis.timeout)
+    ngx.log(ngx.DEBUG, "connecting ", self.config.redis.host..':'..self.config.redis.port..'/'..self.config.redis.database)
+    local ok, err = self.red:connect(self.config.redis.host, self.config.redis.port)
     if err then
         ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
         return nil, err
+    end
+    local res, err = self.red:auth(self.config.redis.password)
+    if not res then
+        ngx.log(ngx.ERR, "failed to authenticate: ", err)
+        return
+    end
+    local res, err = self.red:select(self.config.redis.database)
+    if not res then
+        ngx.log(ngx.ERR, "failed to select database: ", err)
+        return
     end
 end
 
