@@ -22,7 +22,6 @@ local function json_encode(table)
     end
 end
 
-
 function _M:new(o)
     o = o or {}
     setmetatable(o, self)
