@@ -11,7 +11,7 @@ function _M.execute(config)
     storage:set_config(config)
     cache:set_config(config)
 
-    if not cache:enabled() then
+    if cache:cache_control_enabled() then
         ngx.log(ngx.DEBUG, "bypass: cache disabled")
         ngx.header['X-Cache-Status'] = 'Bypass'
         return

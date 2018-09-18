@@ -38,14 +38,14 @@ function _M:generate_cache_key()
     return string.lower(cache_key)
 end
 
-function _M:enabled()
+function _M:cache_control_enabled()
     local cache_control = ngx.req.get_headers()['cache-control']
     ngx.log(ngx.DEBUG, "Cache-Control: ", cache_control)
-    return not (cache_control and cache_control == 'no-cache' and self.config.cache_control)
+    return cache_control and cache_control == 'no-cache' and self.config.cache_control
 end
 
 function _M:cache_ttl()
-    if self.enabled() then
+    if self.cache_control_enabled() then
         local cache_control = ngx.req.get_headers()['cache-control']
         local max_age = string.match(cache_control, '[max-age=](%d+)')
         ngx.log(ngx.DEBUG, "max-age: ", max_age)
