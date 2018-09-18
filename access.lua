@@ -12,6 +12,8 @@ function _M.execute(config)
     cache:set_config(config)
 
     if not cache:enabled() then
+        ngx.log(ngx.DEBUG, "bypass: cache disabled")
+        ngx.header['X-Cache-Status'] = 'Bypass'
         return
     end
 
@@ -29,14 +31,16 @@ function _M.execute(config)
                     ngx.header[header] = value
                 end
             end
-            ngx.header['X-Cache'] = 'HIT'
+            ngx.header['X-Cache-Status'] = 'HIT'
             ngx.print(cached_value.content)
             ngx.exit(200)
         else
             ngx.log(ngx.DEBUG, "miss: ", cache_key)
-            ngx.header['X-Cache'] = 'MISS'
+            ngx.header['X-Cache-Status'] = 'MISS'
         end
     else
+        ngx.log(ngx.DEBUG, "bypass: ", cache_key)
+        ngx.header['X-Cache-Status'] = 'Bypass'
         ngx.log(ngx.DEBUG, "request method is not caching: ", ngx.req.get_method())
     end
 end
