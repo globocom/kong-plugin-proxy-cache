@@ -22,7 +22,7 @@ function _M.execute(config)
     ngx.ctx.rt_body_chunks = {}
     ngx.ctx.rt_body_chunk_number = 1
 
-    if validators.check_request_method(config.request_method) then
+    if validators.check_request_method() then
         local cached_value, err = storage:get(cache_key)
         if cached_value and cached_value ~= ngx.null then
             ngx.log(ngx.DEBUG, "hit: ", cache_key)

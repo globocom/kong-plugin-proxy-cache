@@ -21,7 +21,7 @@ function _M.execute(config)
         local cache_key = cache:generate_cache_key()
         ngx.arg[1] = body
         if validators.check_response_code(config.response_code, ngx.status) and
-           validators.check_request_method(config.request_method) then
+           validators.check_request_method() then
             ngx.log(ngx.DEBUG, "updating cache: ", cache_key)
             storage:set(cache_key, {
                 headers = ngx.ctx.headers,

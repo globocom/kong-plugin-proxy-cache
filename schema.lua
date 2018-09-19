@@ -14,12 +14,6 @@ return {
             default = {"200", "301", "404"},
             required = true
         },
-        request_method = {
-            type = "array",
-            enum = {"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"},
-            default = {"GET", "HEAD"},
-            required = true
-        },
         vary_headers = {
             type = "array",
             required = false

@@ -11,8 +11,8 @@ function _M.check_response_code(tab, val)
     return false
 end
 
-function _M.check_request_method(request_method)
-    for _, value in ipairs(request_method) do
+function _M.check_request_method()
+    for _, value in ipairs({"GET", "HEAD"}) do
         if value == ngx.req.get_method() then
             ngx.log(ngx.DEBUG, 'request method is caching: ', value)
             return true
