@@ -16,15 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     source = ""
   end
 
-  if ENV["KONG_PLUGIN_PATH"]
-    plugin_source = ENV["KONG_PLUGIN_PATH"]
-  elsif File.directory?("./kong-plugin")
-    plugin_source = "./kong-plugin"
-  elsif File.directory?("../kong-plugin")
-    plugin_source = "../kong-plugin"
-  else
-    plugin_source = ""
-  end
+  plugin_source = "./proxy-cache"
 
   if ENV['KONG_VB_MEM']
     memory = ENV["KONG_VB_MEM"]
@@ -93,8 +85,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder source, "/kong"
   end
   if not plugin_source == ""
-    config.vm.synced_folder plugin_source, "/kong-plugin"
+    config.vm.synced_folder plugin_source, "/proxy-cache"
   end
+  config.vm.synced_folder 'spec', "/proxy-cache/spec"
 
   config.vm.network :forwarded_port, guest: 8000, host: 8000
   config.vm.network :forwarded_port, guest: 8001, host: 8001
