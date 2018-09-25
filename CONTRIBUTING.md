@@ -15,7 +15,7 @@ The core team is monitoring for pull requests. We will review your pull request 
 **Before submitting a pull request**, please make sure the following is done:
 
 1. Fork the repository and create your branch from master.
-2. Run `make mk-vm` in the repository root.
+2. Run `make create-virtualmachine` in the repository root.
 3. If you’ve fixed a bug or added code that should be tested, add tests!
 
 ### Contribution Prerequisites
@@ -26,12 +26,13 @@ The core team is monitoring for pull requests. We will review your pull request 
 
 ### Development Workflow
 
-After cloning kong-plugin-proxy-cache, run `make mk-vm` to build the virtual machine. Then, you can run several commands:
+After cloning kong-plugin-proxy-cache, run `make create-virtualmachine` to build the virtual machine. Then, you can run several commands:
 
 * `make help` show the help
 * `make run` start Kong, by ssh into the vm
-* `make mk-vm` build the virtual machine
-* `make rm-vm` delete the virtual machine
+* `make test` test Kong Plugin
+* `make create-virtualmachine` build the virtual machine
+* `make remove-virtualmachine` delete the virtual machine
 
 ## License
 
