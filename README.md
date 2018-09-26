@@ -36,17 +36,19 @@ $ curl -X POST http://kong:8001/services/{service}/plugins \
 
 Here's a list of all the settings which can be used in this plugin:
 
+> Note: The required fields are in bold.
+
 | Field          | Default       | Description
 |----------------|---------------|----------------------------------------------------
-| response_code  | 200, 301, 404 | Upstream response status code considered cacheable
+| **response_code**  | 200, 301, 404 | Upstream response status code considered cacheable
 | vary_headers   |               | Relevant headers considered for the cache key
-| cache_ttl      | 300           | TTL, in seconds, of cache responses
+| **cache_ttl**      | 300           | TTL, in seconds, of cache responses
 | cache_control  | false         | Respect the Cache-Control behaviors
-| redis.host     |               | Host to use for Redis connection
-| redis.port     | 6379          | Port to use for Redis connection
-| redis.timeout  | 2000          | Connection timeout to use for Redis connection
+| **redis.host**     |               | Host to use for Redis connection
+| **redis.port**     | 6379          | Port to use for Redis connection
+| **redis.timeout**  | 2000          | Connection timeout to use for Redis connection
 | redis.password |               | Password to use for Redis connection
-| redis.database | 0             | Database to use for Redis connection
+| **redis.database** | 0             | Database to use for Redis connection
 
 ### Cache Control
 
