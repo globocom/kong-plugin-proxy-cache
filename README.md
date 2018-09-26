@@ -61,12 +61,8 @@ When the `cache_control` is enabled by settings, Kong will respect request and r
 
 ### From GitHub
 
-Navigate to kong plugins folder and execute the following commands:
-
 ```shell
-$ git clone https://github.com/globocom/kong-plugin-proxy-cache
-$ cd kong-plugin-proxy-cache
-$ luarocks make *.rockspec
+$ sh -c "git clone https://github.com/globocom/kong-plugin-proxy-cache /tmp/kong-plugin-proxy-cache && cd /tmp/kong-plugin-proxy-cache && luarocks make *.rockspec"
 ```
 
 ### From LuaRocks
