@@ -9,7 +9,7 @@ ProxyCaching.PRIORITY = 1006
 ProxyCaching.VERSION = '0.1.0'
 
 function ProxyCaching:new()
-    ProxyCaching.super.new(self, "cache")
+    ProxyCaching.super.new(self, "proxy-cache")
 end
 
 function ProxyCaching:init_worker()
