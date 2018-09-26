@@ -1,6 +1,6 @@
-local Storage = require 'kong.plugins.globo-cache.storage'
-local validators = require 'kong.plugins.globo-cache.validators'
-local Cache = require 'kong.plugins.globo-cache.cache'
+local Storage = require 'kong.plugins.proxy-cache.storage'
+local validators = require 'kong.plugins.proxy-cache.validators'
+local Cache = require 'kong.plugins.proxy-cache.cache'
 
 local _M = {}
 

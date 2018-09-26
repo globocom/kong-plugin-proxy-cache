@@ -1,7 +1,7 @@
 local BasePlugin = require "kong.plugins.base_plugin"
-local access = require 'kong.plugins.globo-cache.access'
-local body_filter = require 'kong.plugins.globo-cache.body_filter'
-local header_filter = require 'kong.plugins.globo-cache.header_filter'
+local access = require 'kong.plugins.proxy-cache.access'
+local body_filter = require 'kong.plugins.proxy-cache.body_filter'
+local header_filter = require 'kong.plugins.proxy-cache.header_filter'
 
 local ProxyCaching = BasePlugin:extend()
 
