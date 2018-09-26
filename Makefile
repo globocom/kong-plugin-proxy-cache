@@ -59,5 +59,5 @@ test:
 	@echo '${GREEN}==>${RESET} Testing Kong Plugin in Virtual Machine';
 	@vagrant ssh -c "export PATH=${PATH}:/usr/local/openresty/bin && \
 		cd /kong && \
-		bin/busted -v -o gtest /proxy-cache/spec --pattern=*-spec.lua";
+		bin/busted -v -o gtest /proxy-cache-spec --pattern=*-spec.lua";
 	@echo '${GREEN}==>${RESET} Done.';

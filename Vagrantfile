@@ -87,7 +87,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if not plugin_source == ""
     config.vm.synced_folder plugin_source, "/proxy-cache"
   end
-  config.vm.synced_folder 'spec', "/proxy-cache/spec"
+  config.vm.synced_folder 'spec', "/proxy-cache-spec"
 
   config.vm.network :forwarded_port, guest: 8000, host: 8000
   config.vm.network :forwarded_port, guest: 8001, host: 8001
