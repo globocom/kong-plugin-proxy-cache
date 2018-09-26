@@ -41,20 +41,7 @@ remove-virtualmachine:
 	@vagrant destroy;
 	@echo '${GREEN}==>${RESET} Done.';
 
-
-## start Kong, by ssh into the vm
-run:
-	@echo '${GREEN}==>${RESET} Starting Kong in Virtual Machine';
-	@vagrant ssh -c "kong start";
-	@echo '${GREEN}==>${RESET} Done.';
-
-
-migrate:
-	@echo '${GREEN}==>${RESET} Executing Kong database migrations';
-	@vagrant ssh -c "kong migrations up";
-	@echo '${GREEN}==>${RESET} Done.';
-
-
+## runs tests for Kong Plugin
 test:
 	@echo '${GREEN}==>${RESET} Testing Kong Plugin in Virtual Machine';
 	@vagrant ssh -c "export PATH=${PATH}:/usr/local/openresty/bin && \

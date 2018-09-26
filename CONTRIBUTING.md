@@ -29,8 +29,7 @@ The core team is monitoring for pull requests. We will review your pull request 
 After cloning kong-plugin-proxy-cache, run `make create-virtualmachine` to build the virtual machine. Then, you can run several commands:
 
 * `make help` show the help
-* `make run` start Kong, by ssh into the vm
-* `make test` test Kong Plugin
+* `make test` runs tests for Kong Plugin
 * `make create-virtualmachine` build the virtual machine
 * `make remove-virtualmachine` delete the virtual machine
 
