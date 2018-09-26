@@ -298,7 +298,10 @@ sudo chown -R vagrant /usr/local
 
 # Install lua packages
 git clone https://github.com/Kong/kong.git /kong
-sudo luarocks install busted 2.0.rc12 luacheck 0.20.0 lua-llthreads2 0.1.5
+export LUA_DEPENDENCIES="busted luacheck lua-llthreads2"
+echo $LUA_DEPENDENCIES | xargs -n 1 sudo luarocks install
+
+sudo ln -s /proxy-cache /usr/local/share/lua/5.1/kong/plugins/proxy-cache
 
 echo .
 echo "Successfully Installed Kong version: $KONG_VERSION"
