@@ -297,10 +297,18 @@ sudo echo "LC_ALL=\"en_US.UTF-8\"" >> /etc/default/locale
 sudo chown -R vagrant /usr/local
 
 # Install lua packages
-git clone https://github.com/Kong/kong.git /kong
+# git clone https://github.com/Kong/kong.git /kong
 export LUA_DEPENDENCIES="busted luacheck lua-llthreads2"
-echo $LUA_DEPENDENCIES | xargs -n 1 sudo luarocks install
+# echo $LUA_DEPENDENCIES | xargs -n 1 sudo luarocks install
 
+# Install Redis server
+sudo apt install -y make gcc libc6-dev tcl
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable && sudo make install
+
+
+# Linking plugin
 sudo ln -s /proxy-cache /usr/local/share/lua/5.1/kong/plugins/proxy-cache
 
 echo .
