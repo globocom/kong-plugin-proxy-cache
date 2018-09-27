@@ -306,7 +306,7 @@ sudo apt install -y make gcc libc6-dev tcl
 wget http://download.redis.io/redis-stable.tar.gz
 tar xvzf redis-stable.tar.gz
 cd redis-stable && sudo make install
-
+redis-server --daemonize yes
 
 # Linking plugin
 sudo ln -s /proxy-cache /usr/local/share/lua/5.1/kong/plugins/proxy-cache
