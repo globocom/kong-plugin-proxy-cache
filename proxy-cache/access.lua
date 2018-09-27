@@ -13,7 +13,7 @@ function _M.execute(config)
 
     if cache:cache_control_enabled() then
         ngx.log(ngx.DEBUG, "bypass: cache disabled")
-        ngx.header['X-Cache-Status'] = 'Bypass'
+        ngx.header['X-Cache-Status'] = 'BYPASS'
         return
     end
 
@@ -40,7 +40,7 @@ function _M.execute(config)
         end
     else
         ngx.log(ngx.DEBUG, "bypass: ", cache_key)
-        ngx.header['X-Cache-Status'] = 'Bypass'
+        ngx.header['X-Cache-Status'] = 'BYPASS'
         ngx.log(ngx.DEBUG, "request method is not caching: ", ngx.req.get_method())
     end
 end
