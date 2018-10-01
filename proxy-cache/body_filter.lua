@@ -13,7 +13,7 @@ function _M.execute(config)
     storage:set_config(config)
     cache:set_config(config)
 
-    if cache:cache_control_enabled() then
+    if cache:check_no_cache() then
         return
     end
     if eof then
