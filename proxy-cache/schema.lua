@@ -18,6 +18,10 @@ return {
             type = "array",
             required = false
         },
+        vary_nginx_variables = {
+            type = "array",
+            required = false
+        },
         cache_ttl = {
             type = "number",
             default = 300,
