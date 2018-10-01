@@ -1,7 +1,7 @@
 local _M = {}
 
-local function vary_by_headers(vary_headers, cache_key)
-    local headers = ngx.req.get_headers()
+local function vary_by_headers(request, vary_headers, cache_key)
+    local headers = request.get_headers()
     table.sort(headers)
     for _, header in ipairs(vary_headers) do
         local header_value = headers[header]
@@ -11,12 +11,12 @@ local function vary_by_headers(vary_headers, cache_key)
             header_value = table.concat(header_value, ",")
           end
           ngx.log(ngx.DEBUG, "varying cache key by matched header ("..header..":"..header_value..")")
-          cache_key = cache_key..":"..header.."="..header_value
+          new_cache_key = cache_key..":"..header.."="..header_value
         else
             ngx.log(ngx.DEBUG, "header not found ("..header..")")
         end
     end
-    return cache_key
+    return new_cache_key
 end
 
 function _M:new(o)
@@ -30,10 +30,10 @@ function _M:set_config(config)
     self.config = config or {}
 end
 
-function _M:generate_cache_key()
-    local cache_key = ngx.req.get_method()..':'..ngx.var.request_uri
+function _M:generate_cache_key(request, nginx_variables)
+    local cache_key = request.get_method()..':'..nginx_variables.request_uri
     if self.config.vary_headers then
-        cache_key = vary_by_headers(self.config.vary_headers, cache_key)
+        cache_key = vary_by_headers(request, self.config.vary_headers, cache_key)
     end
     return string.lower(cache_key)
 end

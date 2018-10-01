@@ -17,7 +17,7 @@ function _M.execute(config)
         return
     end
 
-    local cache_key = cache:generate_cache_key()
+    local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
 
     ngx.ctx.rt_body_chunks = {}
     ngx.ctx.rt_body_chunk_number = 1
