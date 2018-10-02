@@ -69,7 +69,7 @@ end
 
 function _M:cache_ttl()
     if self.config.cache_control then
-        local cache_control = ngx.req.get_headers()['cache-control']
+        local cache_control = ngx.req.get_headers()['cache-control'] or ''
         local max_age = string.match(cache_control, '[max-age=](%d+)')
         ngx.log(ngx.DEBUG, "max-age: ", max_age)
         if max_age then
