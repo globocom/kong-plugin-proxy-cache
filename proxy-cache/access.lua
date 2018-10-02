@@ -24,6 +24,11 @@ function _M.execute(config)
 
     if validators.check_request_method() then
         local cached_value, err = storage:get(cache_key)
+        if cache:check_age(storage:ttl(cache_key)) then
+            ngx.log(ngx.DEBUG, "reflesh: TTL")
+            ngx.header['X-Cache-Status'] = 'REFRESH'
+            return
+        end
         if cached_value and cached_value ~= ngx.null then
             ngx.log(ngx.DEBUG, "hit: ", cache_key)
             for header, value in pairs(cached_value.headers) do
