@@ -143,6 +143,7 @@ for _, strategy in helpers.each_strategy() do
         local cache_status = assert.response(response).has.header("X-Cache-Status")
         assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
       end)
+
       it("should return 404 when access two times a invalid route", function()
         local response = proxy_client:get("/404", {
           headers = {
@@ -166,6 +167,7 @@ for _, strategy in helpers.each_strategy() do
         assert(cache_status == 'HIT', "'X-Cache-Status' must be 'HIT'")
         assert(response2.status == 404)
       end)
+      
       describe("when request has Cache-Control", function()
         it("should contains 'REFRESH' in 'X-Cache-Status' when 'Cache-Control' is 'no-cache'", function()
             local response = proxy_client:get("/", {
