@@ -17,6 +17,7 @@ This Kong plugin adds a non-standard `X-Cache-Status` header. There are several 
 
 * `MISS`: The resource was not found in cache, and the request was proxied upstream.
 * `HIT`: The request was satisfied and served from cache.
+* `REFRESH`: The request could not be satisfied due to `Cache-Control` behaviors.
 * `BYPASS`: The request could not be satisfied from cache based on plugin settings.
 
 ## Getting started
