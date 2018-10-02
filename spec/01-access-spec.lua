@@ -124,6 +124,7 @@ for _, strategy in helpers.each_strategy() do
         })
 
         local proxy_client2 = helpers.proxy_client()
+        sleep(0.5)
         local response = proxy_client2:get("/hit", {
           headers = {
             host = "test1.com"
@@ -143,6 +144,30 @@ for _, strategy in helpers.each_strategy() do
         assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
       end)
 
+      it("should return 404 when access two times a invalid route", function()
+        local response = proxy_client:get("/404", {
+          headers = {
+            host = "test1.com"
+          }
+        })
+
+        local cache_status = response.headers["X-Cache-Status"]
+        assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+        assert(response.status == 404)
+
+        local proxy_client2 = helpers.proxy_client()
+        sleep(1)
+        local response2 = proxy_client2:get("/404", {
+          headers = {
+            host = "test1.com"
+          }
+        })
+
+        local cache_status = response2.headers["X-Cache-Status"]
+        assert(cache_status == 'HIT', "'X-Cache-Status' must be 'HIT'")
+        assert(response2.status == 404)
+      end)
+      
       describe("when request has Cache-Control", function()
         it("should contains 'REFRESH' in 'X-Cache-Status' when 'Cache-Control' is 'no-cache'", function()
             local response = proxy_client:get("/", {

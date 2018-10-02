@@ -37,8 +37,9 @@ function _M.execute(config)
                 end
             end
             ngx.header['X-Cache-Status'] = 'HIT'
+            ngx.status = cached_value.status
             ngx.print(cached_value.content)
-            ngx.exit(200)
+            ngx.exit(cached_value.status)
         else
             ngx.log(ngx.DEBUG, "miss: ", cache_key)
             ngx.header['X-Cache-Status'] = 'MISS'

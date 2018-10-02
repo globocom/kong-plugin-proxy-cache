@@ -25,7 +25,8 @@ function _M.execute(config)
             ngx.log(ngx.DEBUG, "updating cache: ", cache_key)
             storage:set(cache_key, {
                 headers = ngx.ctx.headers,
-                content = body
+                content = body,
+                status = ngx.status
             }, cache:cache_ttl())
         end
     else
