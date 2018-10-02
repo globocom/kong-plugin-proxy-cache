@@ -12,8 +12,8 @@ function _M.execute(config)
     cache:set_config(config)
 
     if cache:check_no_cache() then
-        ngx.log(ngx.DEBUG, "bypass: cache disabled")
-        ngx.header['X-Cache-Status'] = 'BYPASS'
+        ngx.log(ngx.DEBUG, "reflesh: no-cache")
+        ngx.header['X-Cache-Status'] = 'REFRESH'
         return
     end
 
