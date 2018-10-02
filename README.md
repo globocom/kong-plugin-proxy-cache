@@ -24,9 +24,9 @@ This Kong plugin adds a non-standard `X-Cache-Status` header. There are several 
 Configure this plugin on a Service by making the following request:
 
 ```shell
-$ curl -X POST http://kong:8001/services/{service}/plugins \
-    --data "name=proxy-cache"
-    --data "config.cache_ttl=300"
+$ curl -X POST http://kong:8001/services/debug-upstream/plugins \
+    --data "name=proxy-cache" \
+    --data "config.cache_ttl=300" \
     --data "config.redis.host=127.0.0.1"
 ```
 
