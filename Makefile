@@ -50,5 +50,7 @@ test:
 		bin/busted -v -o gtest /proxy-cache-spec --pattern=*-spec.lua --defer-print";
 	@echo '${GREEN}==>${RESET} Done.';
 
+## create a new version of plugin. ex: make new_version TAG=1.0.0
 new_version:
-	luarocks new_version --tag=$(TAG)
+	@luarocks new_version --tag=$(TAG)
+	@ls kong-plugin-proxy-cache* | grep -v $(TAG) | xargs rm
