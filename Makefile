@@ -11,8 +11,9 @@ TARGET_MAX_CHAR_NUM=20
 
 .PHONY: help
 
+
 ## Show this help.
-help:           
+help:
 	@echo 'Usage:'
 	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
 	@echo ''
@@ -48,3 +49,6 @@ test:
 		cd /kong && \
 		bin/busted -v -o gtest /proxy-cache-spec --pattern=*-spec.lua --defer-print";
 	@echo '${GREEN}==>${RESET} Done.';
+
+new_version:
+	luarocks new_version --tag=$(TAG)

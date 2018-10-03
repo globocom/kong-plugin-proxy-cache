@@ -40,7 +40,6 @@ for _, strategy in helpers.each_strategy() do
             },
         }
 
-
         assert(helpers.start_kong({
             database   = strategy,
             nginx_conf = "spec/fixtures/custom_nginx.template",
@@ -167,7 +166,7 @@ for _, strategy in helpers.each_strategy() do
         assert(cache_status == 'HIT', "'X-Cache-Status' must be 'HIT'")
         assert(response2.status == 404)
       end)
-      
+
       describe("when request has Cache-Control", function()
         it("should contains 'REFRESH' in 'X-Cache-Status' when 'Cache-Control' is 'no-cache'", function()
             local response = proxy_client:get("/", {
