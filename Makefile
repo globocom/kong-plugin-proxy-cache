@@ -53,4 +53,8 @@ test:
 ## create a new version of plugin. ex: make new_version TAG=1.0.0
 new_version:
 	@luarocks new_version --tag=$(TAG)
+	@ls kong-plugin-proxy-cache* | grep $(TAG) | xargs luarocks pack
 	@ls kong-plugin-proxy-cache* | grep -v $(TAG) | xargs rm
+
+publish:
+	@ls kong-plugin-proxy-cache-*.rockspec | xargs luarocks upload --api-key=${API_KEY}
