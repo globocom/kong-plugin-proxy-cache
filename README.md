@@ -61,6 +61,12 @@ When the `cache_control` is enabled by settings, Kong will respect request and r
 
 ## Installing
 
+### From LuaRocks
+
+```shell
+$ luarocks install kong-plugin-proxy-cache
+```
+
 ### From GitHub
 
 ```shell
