@@ -5,6 +5,9 @@ local Cache = require 'kong.plugins.proxy-cache.cache'
 local _M = {}
 
 function _M.execute(config)
+    ngx.ctx.rt_body_chunks = {}
+    ngx.ctx.rt_body_chunk_number = 1
+
     local storage = Storage:new()
     local cache = Cache:new()
     
@@ -19,8 +22,6 @@ function _M.execute(config)
 
     local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
 
-    ngx.ctx.rt_body_chunks = {}
-    ngx.ctx.rt_body_chunk_number = 1
 
     if validators.check_request_method() then
         local cached_value, err = storage:get(cache_key)
