@@ -18,17 +18,26 @@ end
 
 function ProxyCaching:access(config)
     ProxyCaching.super.access(self)
-    access.execute(config)
+    local ok, err = pcall(access.execute, config)
+    if not ok then
+        ngx.log(ngx.ERR, err)
+    end
 end
 
 function ProxyCaching:header_filter(config)
     ProxyCaching.super.header_filter(self)
-    header_filter.execute(config)
+    local ok, err = pcall(header_filter.execute, config)
+    if not ok then
+        ngx.log(ngx.ERR, err)
+    end
 end
 
 function ProxyCaching:body_filter(config)
     ProxyCaching.super.body_filter(self)
-    body_filter.execute(config)
+    local ok, err = pcall(body_filter.execute, config)
+    if not ok then
+        ngx.log(ngx.ERR, err)
+    end
 end
 
 return ProxyCaching
