@@ -4,10 +4,10 @@ local Cache = require 'kong.plugins.proxy-cache.cache'
 
 local _M = {}
 
-local storage = Storage:new()
-local cache = Cache:new()
-
 function _M.execute(config)
+    local storage = Storage:new()
+    local cache = Cache:new()
+    
     storage:set_config(config)
     cache:set_config(config)
 
