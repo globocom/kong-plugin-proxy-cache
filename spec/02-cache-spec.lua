@@ -18,7 +18,8 @@ describe("Proxy Cache: (cache) ", function()
       -- arrange
       local request = make_request('GET')
       local nginx_variables = {
-        request_uri = "request_uri"
+        request_uri = "request_uri",
+        host = "test.com"
       }
       local cache = Cache:new()
       cache:set_config()
@@ -32,7 +33,8 @@ describe("Proxy Cache: (cache) ", function()
       -- arrange
       local request = make_request('GET')
       local nginx_variables = {
-        request_uri = "request_uri"
+        request_uri = "request_uri",
+        host = "test.com"
       }
       local cache = Cache:new()
       cache:set_config()
@@ -42,13 +44,29 @@ describe("Proxy Cache: (cache) ", function()
       assert(string.match(cache_key, "get"), "'request_method' not found in "..cache_key)
     end)
 
+    it("should return cache key with 'request_method'", function()
+      -- arrange
+      local request = make_request('GET')
+      local nginx_variables = {
+        request_uri = "request_uri",
+        host = "test.com"
+      }
+      local cache = Cache:new()
+      cache:set_config()
+      -- act
+      local cache_key = cache:generate_cache_key(request, nginx_variables)
+      -- assert
+      assert(string.match(cache_key, "test.com"), "'host' not found in "..cache_key)
+    end)
+
     it("should return cache key with header 'Authorization'", function()
       -- arrange
       local request = make_request('GET', {
         Authorization = 'basic'
       })
       local nginx_variables = {
-        request_uri = "request_uri"
+        request_uri = "request_uri",
+        host = "test.com"
       }
       local config = {
         vary_headers = {"Authorization"}
@@ -66,7 +84,8 @@ describe("Proxy Cache: (cache) ", function()
       local request = make_request('GET')
       local nginx_variables = {
         request_uri = "request_uri",
-        auth_client_id = 'abcd1234'
+        auth_client_id = 'abcd1234',
+        host = "test.com"
       }
       local config = {
         vary_nginx_variables = {"auth_client_id"}

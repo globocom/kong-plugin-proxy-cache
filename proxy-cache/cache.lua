@@ -48,7 +48,7 @@ function _M:set_config(config)
 end
 
 function _M:generate_cache_key(request, nginx_variables)
-    local cache_key = request.get_method()..':'..nginx_variables.request_uri
+    local cache_key = nginx_variables.host..':'..request.get_method()..':'..nginx_variables.request_uri
     if self.config.vary_headers then
         cache_key = vary_by_headers(cache_key, request, self.config.vary_headers)
     end
