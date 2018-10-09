@@ -22,7 +22,6 @@ function _M.execute(config)
 
     local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
 
-
     if validators.check_request_method() then
         local cached_value, err = storage:get(cache_key)
         if cache:check_age(storage:ttl(cache_key)) then

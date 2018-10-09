@@ -1,39 +1,19 @@
 local _M = {}
 
-local function vary_by_headers(cache_key, request, vary_headers)
-    local headers = request.get_headers()
-    table.sort(headers)
-    for _, header in ipairs(vary_headers) do
-        local header_value = headers[header]
-        if header_value then
-          if type(header_value) == "table" then
-            table.sort(header_value)
-            header_value = table.concat(header_value, ",")
-          end
-          ngx.log(ngx.DEBUG, "varying cache key by matched header ("..header..":"..header_value..")")
-          new_cache_key = cache_key..":"..header.."="..header_value
-        else
-            ngx.log(ngx.DEBUG, "header not found ("..header..")")
+local function append_to_cache_key(cache_key, list, allowlist)
+    local ordered_list = list
+    table.sort(ordered_list)
+    for _, allowed in ipairs(allowlist) do
+        local value = ordered_list[allowed]
+        if value then
+            if type(value) == "table" then
+                table.sort(value)
+                value = table.concat(value, ",")
+            end
+            cache_key = cache_key..":"..allowed.."="..value
         end
     end
-    return new_cache_key
-end
-
-local function vary_by_nginx_variables(cache_key, nginx_variables, vary_nginx_variables)
-    for _, variable in ipairs(vary_nginx_variables) do
-        local variable_value = nginx_variables[variable]
-        if variable_value then
-          if type(variable_value) == "table" then
-            table.sort(variable_value)
-            variable_value = table.concat(variable_value, ",")
-          end
-          ngx.log(ngx.DEBUG, "varying cache key by matched nginx variable ("..variable..":"..variable_value..")")
-          new_cache_key = cache_key..":"..variable.."="..variable_value
-        else
-            ngx.log(ngx.DEBUG, "variable not found ("..variable..")")
-        end
-    end
-    return new_cache_key
+    return cache_key
 end
 
 function _M:new(o)
@@ -50,10 +30,10 @@ end
 function _M:generate_cache_key(request, nginx_variables)
     local cache_key = nginx_variables.host..':'..request.get_method()..':'..nginx_variables.request_uri
     if self.config.vary_headers then
-        cache_key = vary_by_headers(cache_key, request, self.config.vary_headers)
+        cache_key = append_to_cache_key(cache_key, request.get_headers(), self.config.vary_headers)
     end
     if self.config.vary_nginx_variables then
-        cache_key = vary_by_nginx_variables(cache_key, nginx_variables, self.config.vary_nginx_variables)
+        cache_key = append_to_cache_key(cache_key, nginx_variables, self.config.vary_nginx_variables)
     end
     return string.lower(cache_key)
 end
