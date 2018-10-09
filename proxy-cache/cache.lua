@@ -41,7 +41,6 @@ end
 function _M:check_no_cache()
     if self.config.cache_control then
         local cache_control = ngx.req.get_headers()['cache-control']
-        ngx.log(ngx.DEBUG, "Cache-Control: ", cache_control)
         return cache_control and cache_control == 'no-cache'
     end
     return false
@@ -50,11 +49,7 @@ end
 function _M:cache_ttl()
     if self.config.cache_control then
         local cache_control = ngx.req.get_headers()['cache-control'] or ''
-        local max_age = string.match(cache_control, '[max-age=](%d+)')
-        ngx.log(ngx.DEBUG, "max-age: ", max_age)
-        if max_age then
-            return tonumber(max_age)
-        end
+        return string.match(cache_control, '[max-age=](%d+)')
     end
     return self.config.cache_ttl
 end

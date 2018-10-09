@@ -183,27 +183,11 @@ for _, strategy in helpers.each_strategy() do
             local response = proxy_client:get("/", {
                 headers = {
                     host = "test2.com",
+                    ['Cache-Control'] = "max-age=400"
                 }
             })
             local cache_status = assert.response(response).has.header("X-Cache-Status")
             assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-        end)
-
-        it("should contains 'HIT' in 'X-Cache-Status' when 'Cache-Control' not found and access two times", function()
-            proxy_client:get("/", {
-                headers = {
-                    host = "test2.com",
-                }
-            })
-            local proxy_client2 = helpers.proxy_client()
-            sleep(0.5)
-            local response = proxy_client2:get("/", {
-                headers = {
-                    host = "test2.com"
-                }
-            })
-            local cache_status = assert.response(response).has.header("X-Cache-Status")
-            assert(cache_status == 'HIT', "'X-Cache-Status' must be 'HIT'")
         end)
 
         it("should contains 'MISS' in 'X-Cache-Status' when 'max-age' expires", function()
@@ -217,28 +201,20 @@ for _, strategy in helpers.each_strategy() do
             sleep(3)
             local response = proxy_client2:get("/", {
                 headers = {
-                    host = "test2.com"
+                    host = "test2.com",
+                    ['Cache-Control'] = "max-age=2"
                 }
             })
             local cache_status = assert.response(response).has.header("X-Cache-Status")
             assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
         end)
 
-        it("should contains 'REFRESH' in 'X-Cache-Status' when 'max-age' less than ttl", function()
-            proxy_client:get("/", {
+        it("should contains 'REFRESH' in 'X-Cache-Status' when 'max-age' not found", function()
+            local response = proxy_client:get("/", {
                 headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "max-age=100000"
+                    host = "test2.com"
                 }
             })
-            local proxy_client2 = helpers.proxy_client()
-            local response = proxy_client2:get("/", {
-                headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "max-age=1"
-                }
-            })
-            sleep(2)
             local cache_status = assert.response(response).has.header("X-Cache-Status")
             assert(cache_status == 'REFRESH', "'X-Cache-Status' must be 'REFRESH'")
         end)

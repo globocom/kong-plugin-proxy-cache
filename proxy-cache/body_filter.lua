@@ -22,12 +22,15 @@ function _M.execute(config)
         ngx.arg[1] = body
         if validators.check_response_code(config.response_code, ngx.status) and
            validators.check_request_method() then
-            ngx.log(ngx.DEBUG, "updating cache: ", cache_key)
-            storage:set(cache_key, {
-                headers = ngx.ctx.headers,
-                content = body,
-                status = ngx.status
-            }, cache:cache_ttl())
+            local cache_ttl = cache:cache_ttl()
+            if cache_ttl ~= nil then
+                ngx.log(ngx.DEBUG, "updating cache: ", cache_key)
+                storage:set(cache_key, {
+                    headers = ngx.ctx.headers,
+                    content = body,
+                    status = ngx.status
+                }, cache_ttl)
+            end
         end
     else
         ngx.ctx.rt_body_chunks[ngx.ctx.rt_body_chunk_number] = chunk

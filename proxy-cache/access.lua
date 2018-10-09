@@ -20,6 +20,12 @@ function _M.execute(config)
         return
     end
 
+    if cache:cache_ttl() == nil then
+        ngx.log(ngx.DEBUG, "reflesh: ttl not found")
+        ngx.header['X-Cache-Status'] = 'REFRESH'
+        return
+    end
+
     local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
 
     if validators.check_request_method() then
