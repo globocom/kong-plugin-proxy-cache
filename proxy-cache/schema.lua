@@ -11,7 +11,7 @@ return {
     fields = {
         response_code = {
             type = "array",
-            default = {"200", "301", "404"},
+            default = {"200", "301", "302"},
             required = true
         },
         vary_headers = {
