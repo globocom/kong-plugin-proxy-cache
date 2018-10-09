@@ -41,7 +41,7 @@ Here's a list of all the settings which can be used in this plugin:
 
 | Field          | Default       | Description
 |----------------|---------------|----------------------------------------------------
-| **response_code**  | 200, 301, 404 | Upstream response status code considered cacheable
+| **response_code**  | 200, 301, 302 | Upstream response status code considered cacheable
 | vary_headers   |               | Relevant headers considered for the cache key
 | vary_nginx_variables |              | Relevant nginx variables considered for the cache key
 | **cache_ttl**      | 300           | TTL, in seconds, of cache responses
