@@ -47,19 +47,19 @@ function _M.execute(config)
         return
     end
     
-    local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
-    if cache:check_age(storage:ttl(cache_key)) then
+    ngx.ctx.cache_key = cache:generate_cache_key(ngx.req, ngx.var)
+    if cache:check_age(storage:ttl(ngx.ctx.cache_key)) then
         ngx.log(ngx.NOTICE, "[cache-check] the cache key exists but it was expires")
         ngx.header['X-Cache-Status'] = 'REFRESH'
         return
     end
-    local cached_value, err = storage:get(cache_key)
+    local cached_value, err = storage:get(ngx.ctx.cache_key)
     if not (cached_value and cached_value ~= ngx.null) then
-        ngx.log(ngx.NOTICE, "[cache-check] the cache key '"..cache_key.."' was not found")
+        ngx.log(ngx.NOTICE, "[cache-check] the cache key '"..ngx.ctx.cache_key.."' was not found")
         ngx.header['X-Cache-Status'] = 'MISS'
         return
     end
-    return render_from_cache(cache_key, cached_value)
+    return render_from_cache(ngx.ctx.cache_key, cached_value)
 end
 
 return _M
