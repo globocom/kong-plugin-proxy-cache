@@ -79,7 +79,7 @@ describe("Proxy Cache: (cache) ", function()
       -- assert
       assert(string.match(cache_key, "authorization=basic"), "header 'Authorization' not found in "..cache_key)
     end)
-  
+
     it("should return cache key with nginx variable 'auth_client_id'", function()
       -- arrange
       local request = make_request('GET')

@@ -3,7 +3,6 @@ local function server_port(given_value, given_config)
         return false, "port value too high"
     end
 end
-  
 
 return {
     no_consume = true,
