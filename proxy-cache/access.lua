@@ -37,11 +37,6 @@ function _M.execute(config)
     
     ngx.ctx.cache_key = cache:generate_cache_key(ngx.req, ngx.var)
     local cached_value_ttl = storage:ttl(ngx.ctx.cache_key)
-    if cached_value_ttl == -1 then
-        ngx.log(ngx.NOTICE, "[cache-check] the cache key exists but it was expires")
-        ngx.header['X-Cache-Status'] = 'EXPIRED'
-        return
-    end
     if cached_value_ttl == -2 then
         ngx.log(ngx.NOTICE, "[cache-check] the cache key '"..ngx.ctx.cache_key.."' was not found")
         ngx.header['X-Cache-Status'] = 'MISS'
