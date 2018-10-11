@@ -23,6 +23,9 @@ for _, strategy in helpers.each_strategy() do
         local route3 = bp.routes:insert({
             hosts = { "responsecode.com" },
         })
+        local route4 = bp.routes:insert({
+            hosts = { "test-cache-control.com" },
+        })
         bp.plugins:insert {
             name = "proxy-cache",
             route_id = route1.id,
@@ -43,14 +46,32 @@ for _, strategy in helpers.each_strategy() do
             },
         }
         bp.plugins:insert {
+            name = "request-transformer",
+            route_id = route2.id,
+            config = {
+                add = {
+                    headers = "Cache-Control:max-age=2"
+                }
+            },
+        }
+        bp.plugins:insert {
             name = "proxy-cache",
             route_id = route3.id,
             config = {
-                cache_control = true,
                 redis = {
                     host = "localhost"
                 },
                 response_code = {"404"}
+            },
+        }
+        bp.plugins:insert {
+            name = "proxy-cache",
+            route_id = route4.id,
+            config = {
+                cache_control = true,
+                redis = {
+                    host = "localhost"
+                }
             },
         }
 
@@ -115,203 +136,179 @@ for _, strategy in helpers.each_strategy() do
     end)
 
     describe("response headers", function()
-      after_each(function()
-        red:flushall()
-      end)
-
-      it("should contains 'MISS' in 'X-Cache-Status' when first access", function()
-        local response = proxy_client:get("/", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-        local cache_status = assert.response(response).has.header("X-Cache-Status")
-        assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-      end)
-
-      it("should contains 'HIT' in 'X-Cache-Status' when access '/' two times", function()
-        proxy_client:get("/hit", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-
-        local proxy_client2 = helpers.proxy_client()
-        sleep(0.5)
-        local response = proxy_client2:get("/hit", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-
-        local cache_status = assert.response(response).has.header("X-Cache-Status")
-        assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-      end)
-
-      it("should contains 'BYPASS' in 'X-Cache-Status' when invalid method", function()
-        local response = proxy_client:post("/", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-        local cache_status = assert.response(response).has.header("X-Cache-Status")
-        assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
-      end)
-
-      it("should return 404 when access two times a invalid route", function()
-        local response = proxy_client:get("/404", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-
-        local cache_status = response.headers["X-Cache-Status"]
-        assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-        assert(response.status == 404)
-
-        local proxy_client2 = helpers.proxy_client()
-        sleep(1)
-        local response2 = proxy_client2:get("/404", {
-          headers = {
-            host = "test1.com"
-          }
-        })
-
-        local cache_status = response2.headers["X-Cache-Status"]
-        assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-        assert(response2.status == 404)
-      end)
-
-      describe("when request has Cache-Control", function()
-        it("should contains 'REFRESH' in 'X-Cache-Status' when 'Cache-Control' is 'no-cache'", function()
-            local response = proxy_client:get("/", {
-                headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "no-cache"
-                }
-            })
-            local cache_status = assert.response(response).has.header("X-Cache-Status")
-            assert(cache_status == 'REFRESH', "'X-Cache-Status' must be 'REFRESH'")
-        end)
-
-        it("should contains 'MISS' in 'X-Cache-Status' when 'Cache-Control' not found", function()
-            local response = proxy_client:get("/", {
-                headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "max-age=400"
-                }
-            })
-            local cache_status = assert.response(response).has.header("X-Cache-Status")
-            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-        end)
-
-        it("should contains 'MISS' in 'X-Cache-Status' when 'max-age' expires", function()
-            proxy_client:get("/", {
-                headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "max-age=2"
-                }
-            })
-            local proxy_client2 = helpers.proxy_client()
-            sleep(3)
-            local response = proxy_client2:get("/", {
-                headers = {
-                    host = "test2.com",
-                    ['Cache-Control'] = "max-age=2"
-                }
-            })
-            local cache_status = assert.response(response).has.header("X-Cache-Status")
-            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-        end)
-
-        it("should contains 'REFRESH' in 'X-Cache-Status' when 'max-age' not found", function()
-            local response = proxy_client:get("/", {
-                headers = {
-                    host = "test2.com"
-                }
-            })
-            local cache_status = assert.response(response).has.header("X-Cache-Status")
-            assert(cache_status == 'REFRESH', "'X-Cache-Status' must be 'REFRESH'")
-        end)
-      end)
-      describe("Reponse Code:", function()
         after_each(function()
-          red:flushall()
+            red:flushall()
         end)
 
-        it("should cache default response codes(200)", function()
-          local response1 = proxy_client:get("/", {
-            headers = {
-                  host = "test1.com",
-                  ['Cache-Control'] = "max-age=400"
-              }
-          })
-          local cache_status = assert.response(response1).has.header("X-Cache-Status")
-          assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-          assert(200 == response1["status"])
+        it("should contains 'MISS' in 'X-Cache-Status' when first access", function()
+            local response = proxy_client:get("/miss", {
+                headers = {
+                    host = "test1.com"
+                }
+            })
+            local cache_status = response.headers["X-Cache-Status"]
+            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+        end)
 
-          sleep(0.5)
-          local proxy_client2 = helpers.proxy_client()
-          local response2 = proxy_client2:get("/", {
+        it("should contains 'HIT' in 'X-Cache-Status' when access '/' two times", function()
+            proxy_client:get("/status/200", {
+                headers = {
+                    host = "test1.com"
+                }
+            })
+
+            local proxy_client2 = helpers.proxy_client()
+            sleep(0.5)
+            local response = proxy_client2:get("/status/200", {
+                headers = {
+                    host = "test1.com"
+                }
+            })
+
+            local cache_status = response.headers["X-Cache-Status"]
+            assert(cache_status == 'HIT', "'X-Cache-Status' must be 'HIT'")
+        end)
+
+        it("should contains 'BYPASS' in 'X-Cache-Status' when invalid method", function()
+            local response = proxy_client:post("/", {
+                headers = {
+                    host = "test1.com"
+                }
+            })
+            local cache_status = response.headers["X-Cache-Status"]
+            assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
+        end)
+
+        it("should return 404 when access two times a invalid route", function()
+            local response = proxy_client:get("/404", {
+                headers = {
+                    host = "test1.com"
+                }
+            })
+
+            local cache_status = response.headers["X-Cache-Status"]
+            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+            assert(response.status == 404)
+
+            local proxy_client2 = helpers.proxy_client()
+            sleep(1)
+            local response2 = proxy_client2:get("/404", {
             headers = {
-              host = "test1.com"
+                host = "test1.com"
             }
-          })
+            })
 
-          local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
-          assert(cache_status2 == 'HIT', "'X-Cache-Status' must be 'HIT'")
-          assert(200 == response2["status"])
+            local cache_status = response2.headers["X-Cache-Status"]
+            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+            assert(response2.status == 404)
         end)
 
-        it("should not cache default response code(404)", function()
-          local response1 = proxy_client:get("/notfound", {
-            headers = {
-                  host = "test1.com",
-                  ['Cache-Control'] = "max-age=400"
-              }
-          })
+        describe("when request has Cache-Control", function()
+            it("should contains 'MISS' in 'X-Cache-Status' when 'Cache-Control' not found", function()
+                local response = proxy_client:get("/", {
+                    headers = {
+                        host = "test-cache-control.com",
+                    }
+                })
+                local cache_status = assert.response(response).has.header("X-Cache-Status")
+                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+            end)
 
-          local cache_status = assert.response(response1).has.header("X-Cache-Status")
-          assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-          assert(404 == response1["status"], "expected 404 from status")
-
-          sleep(0.5)
-          local proxy_client2 = helpers.proxy_client()
-          local response2 = proxy_client2:get("/notfound", {
-            headers = {
-              host = "test1.com"
-            }
-          })
-
-          local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
-          assert(cache_status2 == 'MISS', "'X-Cache-Status' must be 'MISS'")
-          assert(404 == response2["status"], "expected 404 from status")
+            it("should contains 'MISS' in 'X-Cache-Status' when cache key expires", function()
+                proxy_client:get("/status/200", {
+                    headers = {
+                        host = "test2.com",
+                    },
+                })
+                local proxy_client2 = helpers.proxy_client()
+                ngx.sleep(3)
+                local response = proxy_client2:get("/status/200", {
+                    headers = {
+                        host = "test2.com",
+                    }
+                })
+                local cache_status = response.headers["X-Cache-Status"]
+                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+            end)
         end)
+        describe("Response Code:", function()
+            after_each(function()
+                red:flushall()
+            end)
 
-        it("should cache a configured response code (404)", function()
-          local response1 = proxy_client:get("/notfound", {
-            headers = {
-                  host = "responsecode.com",
-              }
-          })
+            it("should cache default response codes(200)", function()
+                local response1 = proxy_client:get("/", {
+                    headers = {
+                        host = "test1.com",
+                        ['Cache-Control'] = "max-age=400"
+                    }
+                })
+                local cache_status = response1.headers["X-Cache-Status"]
+                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+                assert(200 == response1["status"])
 
-          local cache_status = assert.response(response1).has.header("X-Cache-Status")
-          assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-          assert(404 == response1["status"], "expected 404 from status")
+                sleep(0.5)
+                local proxy_client2 = helpers.proxy_client()
+                local response2 = proxy_client2:get("/", {
+                    headers = {
+                        host = "test1.com"
+                    }
+                })
 
-          sleep(0.5)
-          local proxy_client2 = helpers.proxy_client()
-          local response2 = proxy_client2:get("/notfound", {
-            headers = {
-              host = "responsecode.com"
-            }
-          })
+                local cache_status2 = response2.headers["X-Cache-Status"]
+                assert(cache_status2 == 'HIT', "'X-Cache-Status' must be 'HIT'")
+                assert(200 == response2["status"])
+            end)
 
-          local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
-          assert(cache_status2 == 'HIT', "'X-Cache-Status' must be 'HIT'")
-          assert(404 == response2["status"], "expected 404 from status")
+            it("should not cache default response code(404)", function()
+                local response1 = proxy_client:get("/notfound", {
+                    headers = {
+                        host = "test1.com",
+                        ['Cache-Control'] = "max-age=400"
+                    }
+                })
+
+                local cache_status = assert.response(response1).has.header("X-Cache-Status")
+                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+                assert(404 == response1["status"], "expected 404 from status")
+
+                sleep(0.5)
+                local proxy_client2 = helpers.proxy_client()
+                local response2 = proxy_client2:get("/notfound", {
+                    headers = {
+                        host = "test1.com"
+                    }
+                })
+
+                local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
+                assert(cache_status2 == 'MISS', "'X-Cache-Status' must be 'MISS'")
+                assert(404 == response2["status"], "expected 404 from status")
+            end)
+
+            it("should cache a configured response code (404)", function()
+                local response1 = proxy_client:get("/status/404", {
+                    headers = {
+                        host = "responsecode.com",
+                    }
+                })
+
+                local cache_status = assert.response(response1).has.header("X-Cache-Status")
+                assert(404 == response1["status"], "expected 404 from status")
+                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+
+                sleep(1)
+                local proxy_client2 = helpers.proxy_client()
+                local response2 = proxy_client2:get("/status/404", {
+                    headers = {
+                        host = "responsecode.com"
+                    }
+                })
+
+                local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
+                assert(404 == response2["status"], "expected 404 from status")
+                assert(cache_status2 == 'HIT', "'X-Cache-Status' must be 'HIT'")
+            end)
         end)
-      end)
     end)
   end)
 end
