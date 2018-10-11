@@ -52,9 +52,4 @@ function _M:cache_ttl()
     return self.config.cache_ttl
 end
 
-function _M:check_age(cache_age)
-    local DOES_NOT_EXIST = -2
-    return cache_age ~= DOES_NOT_EXIST and cache_age > self:cache_ttl()
-end
-
 return _M
