@@ -43,15 +43,6 @@ function _M:generate_cache_key(request, nginx_variables)
     return string.lower(cache_key)
 end
 
-function _M:check_no_cache()
-    if self.config.cache_control then
-        ngx.log(ngx.NOTICE, "[cache-control] checking if has 'no-cache'")
-        local cache_control = ngx.req.get_headers()['cache-control']
-        return cache_control and cache_control == 'no-cache'
-    end
-    return false
-end
-
 function _M:cache_ttl()
     if self.config.cache_control then
         ngx.log(ngx.NOTICE, "[cache-control] getting the 'max-age'")

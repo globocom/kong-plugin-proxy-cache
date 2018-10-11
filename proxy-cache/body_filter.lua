@@ -13,10 +13,6 @@ function _M.execute(config)
     storage:set_config(config)
     cache:set_config(config)
 
-    if cache:check_no_cache() then
-        ngx.log(ngx.NOTICE, "[cache-update] cache-control: no-cache")
-        return
-    end
     if eof then
         ngx.log(ngx.NOTICE, "[cache-update] response content finished")
         local body = table.concat(ngx.ctx.rt_body_chunks)
