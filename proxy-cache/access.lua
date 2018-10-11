@@ -29,12 +29,6 @@ function _M.execute(config)
     storage:set_config(config)
     cache:set_config(config)
 
-    if cache:cache_ttl() == nil then
-        ngx.log(ngx.NOTICE, "[cache-check] cache TTL is undefined")
-        ngx.header['X-Cache-Status'] = 'REFRESH'
-        return
-    end
-
     if not validators.check_request_method() then
         ngx.log(ngx.NOTICE, "[cache-check] the cache was ignored because of plugin config")
         ngx.header['X-Cache-Status'] = 'BYPASS'
