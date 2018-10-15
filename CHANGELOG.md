@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.2.0 - 2018-10-15
+### Fixed
+- `Cache-Control` was implemented incorrectly. It was respecting the client header instead of the upstream header.
+
+### Changed
+- Change default `response_code` to `200`, `301` and `302` like the nginx default config.
+
+### Removed
+- `REFRESH` from `X-Cache-Status`.
+- `Cache-Control: no-cache` validation on access.
+
 ## 1.1.0 - 2018-10-09
 ### Added
 - `ngx.host` was added to compose cache key.
