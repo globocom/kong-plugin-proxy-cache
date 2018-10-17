@@ -2,11 +2,6 @@ local helpers = require "spec.helpers"
 local redis = require "resty.redis"
 local pretty = require "pl.pretty"
 
-
-function sleep(n)
-  os.execute("sleep " .. tonumber(n))
-end
-
 for _, strategy in helpers.each_strategy() do
   describe("Proxy Cache: (access) [#" .. strategy .. "]", function()
     local proxy_client
@@ -158,7 +153,7 @@ for _, strategy in helpers.each_strategy() do
             })
 
             local proxy_client2 = helpers.proxy_client()
-            sleep(0.5)
+
             local response = proxy_client2:get("/status/200", {
                 headers = {
                     host = "test1.com"
@@ -191,7 +186,6 @@ for _, strategy in helpers.each_strategy() do
             assert(response.status == 404)
 
             local proxy_client2 = helpers.proxy_client()
-            sleep(1)
             local response2 = proxy_client2:get("/404", {
             headers = {
                 host = "test1.com"
@@ -246,8 +240,6 @@ for _, strategy in helpers.each_strategy() do
                 local cache_status = response1.headers["X-Cache-Status"]
                 assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
                 assert(200 == response1["status"])
-
-                sleep(0.5)
                 local proxy_client2 = helpers.proxy_client()
                 local response2 = proxy_client2:get("/", {
                     headers = {
@@ -271,8 +263,6 @@ for _, strategy in helpers.each_strategy() do
                 local cache_status = assert.response(response1).has.header("X-Cache-Status")
                 assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
                 assert(404 == response1["status"], "expected 404 from status")
-
-                sleep(0.5)
                 local proxy_client2 = helpers.proxy_client()
                 local response2 = proxy_client2:get("/notfound", {
                     headers = {
@@ -295,8 +285,6 @@ for _, strategy in helpers.each_strategy() do
                 local cache_status = assert.response(response1).has.header("X-Cache-Status")
                 assert(404 == response1["status"], "expected 404 from status")
                 assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-
-                sleep(1)
                 local proxy_client2 = helpers.proxy_client()
                 local response2 = proxy_client2:get("/status/404", {
                     headers = {
