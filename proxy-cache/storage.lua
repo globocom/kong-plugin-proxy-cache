@@ -89,15 +89,4 @@ function _M:get(key)
     return json_decode(cached_value)
 end
 
-function _M:ttl(key)
-    self:connect()
-    local ttl, err  = self.red:ttl(key)
-    if err then
-        ngx.log(ngx.ERR, "failed to get ttl: ", err)
-        return nil, err
-    end
-    self:close()
-    return ttl
-end
-
 return _M
