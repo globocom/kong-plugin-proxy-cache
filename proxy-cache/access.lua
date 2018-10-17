@@ -19,10 +19,7 @@ local function render_from_cache(cache_key, cached_value)
     ngx.exit(cached_value.status)
 end
 
-function _M.execute(config)
-    ngx.ctx.rt_body_chunks = {}
-    ngx.ctx.rt_body_chunk_number = 1
-
+function _M.execute(config, lrucache)
     local storage = Storage:new()
     local cache = Cache:new()
     
@@ -40,6 +37,14 @@ function _M.execute(config)
     if not (cached_value and cached_value ~= ngx.null) then
         ngx.log(ngx.NOTICE, "[cache-check] the cache key '"..ngx.ctx.cache_key.."' was not found")
         ngx.header['X-Cache-Status'] = 'MISS'
+        local cached_chunks = lrucache:get(ngx.ctx.cache_key)
+        if not cached_chunks or cached_chunks.eof then
+            lrucache:set(ngx.ctx.cache_key, {
+                rt_body_chunks = {},
+                rt_body_chunk_number = 1,
+                eof = false
+            })
+        end
         return
     end
     return render_from_cache(ngx.ctx.cache_key, cached_value)
