@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square"></a>
+  <a href="https://luarocks.org/modules/sergiojorge/kong-plugin-proxy-cache"><img src="https://img.shields.io/luarocks/v/sergiojorge/kong-plugin-proxy-cache.svg?style=flat-square"></a>
   <a href="https://www.globo.com/"><img src="https://img.shields.io/badge/powered%20by-globo.com-blue.svg?style=flat-square"></a>
 </p>
 
