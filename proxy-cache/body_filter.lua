@@ -16,14 +16,13 @@ function _M.execute(config)
     if eof then
         ngx.log(ngx.NOTICE, "[cache-update] response content finished")
         local body = table.concat(ngx.ctx.rt_body_chunks)
-        local cache_key = cache:generate_cache_key(ngx.req, ngx.var)
         ngx.arg[1] = body
         if validators.check_response_code(config.response_code, ngx.status) and
            validators.check_request_method() then
             local cache_ttl = cache:cache_ttl()
             if cache_ttl ~= nil then
-                ngx.log(ngx.NOTICE, "[cache-update]["..cache_key.."]["..cache_ttl.."] updating cache")
-                storage:set(cache_key, {
+                ngx.log(ngx.NOTICE, "[cache-update]["..ngx.ctx.cache_key.."]["..cache_ttl.."] updating cache")
+                storage:set(ngx.ctx.cache_key, {
                     headers = ngx.ctx.headers,
                     content = body,
                     status = ngx.status
