@@ -29,7 +29,7 @@ function _M.execute(config, lrucache)
         if cache_ttl ~= nil then
             ngx.log(ngx.NOTICE, "[cache-update]["..ngx.ctx.cache_key.."]["..cache_ttl.."] updating cache")
             storage:set(ngx.ctx.cache_key, {
-                headers = ngx.ctx.headers,
+                headers = ngx.resp.get_headers(),
                 content = body,
                 status = ngx.status
             }, cache_ttl)
