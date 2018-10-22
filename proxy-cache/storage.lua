@@ -36,7 +36,6 @@ end
 function _M:connect()
     self.red = redis:new()
     self.red:set_timeout(self.config.redis.timeout)
-    ngx.log(ngx.DEBUG, "connecting ", self.config.redis.host..':'..self.config.redis.port..'/'..self.config.redis.database)
     local ok, err = self.red:connect(self.config.redis.host, self.config.redis.port)
     if not ok then
         ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
@@ -66,7 +65,6 @@ end
 function _M:set(key, value, expire_time)
     ngx.timer.at(0, function(premature)
         self:connect()
-        ngx.log(ngx.DEBUG, "[storage] set key: ", key)
         local ok, err = self.red:set(key, json_encode(value))
         if not ok then
             ngx.log(ngx.ERR, "failed to set cache: ", err)
@@ -79,7 +77,6 @@ end
 
 function _M:get(key)
     self:connect()
-    ngx.log(ngx.DEBUG, "[storage] get key: ", key)
     local cached_value, err = self.red:get(key)
     if err then
         ngx.log(ngx.ERR, "failed to get cache: ", err)

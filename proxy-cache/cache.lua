@@ -6,14 +6,11 @@ local function append_to_cache_key(cache_key, list, allowlist)
     for _, allowed in ipairs(allowlist) do
         local value = ordered_list[allowed]
         if value then
-            ngx.log(ngx.NOTICE, "[cache-key] the '"..allowed.."' was appended")
             if type(value) == "table" then
                 table.sort(value)
                 value = table.concat(value, ",")
             end
             cache_key = cache_key..":"..allowed.."="..value
-        else
-            ngx.log(ngx.NOTICE, "[cache-key] the '"..allowed.."' not found")
         end
     end
     return cache_key
@@ -33,11 +30,9 @@ end
 function _M:generate_cache_key(request, nginx_variables)
     local cache_key = nginx_variables.host..':'..request.get_method()..':'..nginx_variables.request_uri
     if self.config.vary_headers then
-        ngx.log(ngx.NOTICE, "[cache-key] appending headers")
         cache_key = append_to_cache_key(cache_key, request.get_headers(), self.config.vary_headers)
     end
     if self.config.vary_nginx_variables then
-        ngx.log(ngx.NOTICE, "[cache-key] appending nginx variables")
         cache_key = append_to_cache_key(cache_key, nginx_variables, self.config.vary_nginx_variables)
     end
     return string.lower(cache_key)
@@ -45,7 +40,6 @@ end
 
 function _M:cache_ttl()
     if self.config.cache_control then
-        ngx.log(ngx.NOTICE, "[cache-control] getting the 'max-age'")
         local cache_control = ngx.header['cache-control'] or ''
         return string.match(cache_control, '[max-age=](%d+)')
     end
