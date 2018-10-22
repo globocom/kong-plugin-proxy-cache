@@ -41,10 +41,12 @@ function _M:connect()
         ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
         return nil, err
     end
-    local ok, err = self.red:auth(self.config.redis.password)
-    if not ok then
-        ngx.log(ngx.ERR, "failed to authenticate: ", err)
-        return nil, err
+    if self.config.redis.password then
+        local ok, err = self.red:auth(self.config.redis.password)
+        if not ok then
+            ngx.log(ngx.ERR, "failed to authenticate: ", err)
+            return nil, err
+        end
     end
     local ok, err = self.red:select(self.config.redis.database)
     if not ok then
