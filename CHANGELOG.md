@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.2.3 - 2018-10-22
+### Changed
+- Improves performance
+
 ## 1.2.2 - 2018-10-22
 ### Changed
 - Improves performance
