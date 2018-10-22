@@ -10,12 +10,8 @@ function _M.check_response_code(tab, val)
 end
 
 function _M.check_request_method()
-    for _, value in ipairs({"GET", "HEAD"}) do
-        if value == ngx.req.get_method() then
-            return true
-        end
-    end
-    return false
+    local request_method = ngx.req.get_method()
+    return request_method == 'GET' or request_method == 'HEAD'
 end
 
 return _M
