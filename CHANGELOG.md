@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.2.4 - 2018-10-22
+### Changed
+- Improves performance
+
+### Fixed
+- The plugin should not process the `:body_filter(config)` when `rt_body_chunks` is `nil`.
+
 ## 1.2.3 - 2018-10-22
 ### Changed
 - Improves performance
