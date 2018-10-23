@@ -1,8 +1,8 @@
 package = "kong-plugin-proxy-cache"
-version = "1.2.3-1"
+version = "1.2.4-1"
 source = {
    url = "git+ssh://git@github.com/globocom/kong-plugin-proxy-cache.git",
-   tag = "1.2.3"
+   tag = "1.2.4"
 }
 description = {
    detailed = "A Proxy Caching plugin for Kong",
