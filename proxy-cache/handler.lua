@@ -25,9 +25,12 @@ end
 
 function ProxyCaching:body_filter(config)
     ProxyCaching.super.body_filter(self)
-    local ok, err = pcall(body_filter.execute, config)
-    if not ok then
-        ngx.log(ngx.CRIT, err)
+    local rt_body_chunks = ngx.ctx.rt_body_chunks
+    if rt_body_chunks then
+        local ok, err = pcall(body_filter.execute, config)
+        if not ok then
+            ngx.log(ngx.CRIT, err)
+        end
     end
 end
 
