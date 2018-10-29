@@ -27,7 +27,7 @@ function _M.execute(config)
         local cache_ttl = cache:cache_ttl()
         if cache_ttl ~= nil then
             storage:set(cache_key, {
-                headers = ngx.resp.get_headers(),
+                headers = ngx.resp.get_headers(0, true),
                 content = body,
                 status = ngx.status
             }, cache_ttl)
