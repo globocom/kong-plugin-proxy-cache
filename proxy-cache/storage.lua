@@ -56,7 +56,7 @@ function _M:connect()
 end
 
 function _M:close()
-    local ok, err = self.red:set_keepalive(10000, 100)
+    local ok, err = self.red:set_keepalive(10000, 1000)
     if not ok then
         ngx.log(ngx.ERR, "failed to set keepalive: ", err)
         return nil, err
