@@ -41,7 +41,7 @@ function _M:connect()
 end
 
 function _M:close()
-    local ok, err = self.red:set_keepalive(10000, 1000)
+    local ok, err = self.red:set_keepalive(self.config.max_idle_timeout, self.config.pool_size)
     if not ok then
         ngx.log(ngx.ERR, "failed to set keepalive: ", err)
         return nil, err

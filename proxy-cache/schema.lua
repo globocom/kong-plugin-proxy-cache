@@ -40,7 +40,9 @@ return {
                     },
                     timeout = {type = "number", required = true, default = 2000},
                     password = {type = "string", required = false},
-                    database = {type = "number", required = true, default = 0}
+                    database = {type = "number", required = true, default = 0},
+                    max_idle_timeout = {type = "number", required = true, default = 10000},
+                    pool_size = {type = "number", required = true, default = 1000}
                 }
             }
         }
