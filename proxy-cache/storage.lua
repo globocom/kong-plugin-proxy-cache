@@ -41,8 +41,9 @@ function _M:connect()
         ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
         return false
     end
-    if self.config.redis.password then
-        local ok, err = self.red:auth(self.config.redis.password)
+    local pass = self.config.redis.password
+    if pass ~= nil and string.len(pass) > 0 then
+        local ok, err = self.red:auth(pass)
         if not ok then
             ngx.log(ngx.ERR, "failed to authenticate: ", err)
             return false
