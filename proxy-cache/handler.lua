@@ -26,7 +26,8 @@ end
 function ProxyCaching:body_filter(config)
     ProxyCaching.super.body_filter(self)
     local rt_body_chunks = ngx.ctx.rt_body_chunks
-    if rt_body_chunks then
+    local is_miss =  ngx.header['X-Cache-Status'] == 'MISS'
+    if rt_body_chunks and is_miss then
         local ok, err = pcall(body_filter.execute, config)
         if not ok then
             ngx.log(ngx.CRIT, err)
