@@ -1,25 +1,26 @@
 local Storage = require 'kong.plugins.proxy-cache.storage'
 local validators = require 'kong.plugins.proxy-cache.validators'
 local Cache = require 'kong.plugins.proxy-cache.cache'
+local Encoder = require 'kong.plugins.proxy-cache.encoder'
 
 local _M = {}
 
 local function render_from_cache(cache_key, cached_value)
-    for header, value in pairs(cached_value.headers) do
-        if string.upper(header) ~= 'CONNECTION' then
+    local response = Encoder.decode(cached_value)
+    if response.headers then
+        for header, value in pairs(response.headers) do
             ngx.header[header] = value
         end
     end
     ngx.header['X-Cache-Status'] = 'HIT'
-    ngx.status = cached_value.status
-    ngx.print(cached_value.content)
-    ngx.exit(cached_value.status)
+    ngx.status = response.status
+    ngx.print(response.content)
+    ngx.exit(response.status)
 end
 
 function _M.execute(config)
     local storage = Storage:new()
     local cache = Cache:new()
-    
     storage:set_config(config)
     cache:set_config(config)
 
