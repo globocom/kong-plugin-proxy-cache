@@ -49,10 +49,13 @@ function _M:connect()
             return false
         end
     end
-    local ok, err = self.red:select(self.config.redis.database)
-    if not ok then
-        ngx.log(ngx.ERR, "failed to select database: ", err)
-        return false
+    local db = self.config.redis.database
+    if db > 0 then
+        local ok, err = self.red:select(db)
+        if not ok then
+            ngx.log(ngx.ERR, "failed to select database: ", err)
+            return false
+        end
     end
     return true
 end
