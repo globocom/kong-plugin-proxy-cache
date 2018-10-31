@@ -46,10 +46,6 @@ local function async_update_cache(config, cache_key, body)
 end
 
 function _M.execute(config)
-    if not (validators.check_response_code(config.response_code, ngx.status) and
-       validators.check_request_method()) then
-        return
-    end
     local cache_key = ngx.ctx.cache_key
     local rt_body_chunks = ngx.ctx.rt_body_chunks
     local rt_body_chunk_number = ngx.ctx.rt_body_chunk_number
@@ -58,7 +54,10 @@ function _M.execute(config)
     if eof then
         local body = table.concat(rt_body_chunks)
         ngx.arg[1] = body
-        return async_update_cache(config, cache_key, body)
+        if validators.check_response_code(config.response_code, ngx.status) and
+           validators.check_request_method() then
+            return async_update_cache(config, cache_key, body)
+        end
     else
         rt_body_chunks[rt_body_chunk_number] = chunk
         rt_body_chunk_number = rt_body_chunk_number + 1
