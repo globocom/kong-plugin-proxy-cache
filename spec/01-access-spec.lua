@@ -136,7 +136,7 @@ for _, strategy in helpers.each_strategy() do
         end)
 
         it("should contains 'MISS' in 'X-Cache-Status' when first access", function()
-            local response = proxy_client:get("/miss", {
+            local response = proxy_client:get("/", {
                 headers = {
                     host = "test1.com"
                 }
@@ -174,27 +174,14 @@ for _, strategy in helpers.each_strategy() do
             assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
         end)
 
-        it("should return 404 when access two times a invalid route", function()
+        it("should contains 'BYPASS' in 'X-Cache-Status' when response status is 404", function()
             local response = proxy_client:get("/404", {
                 headers = {
                     host = "test1.com"
                 }
             })
-
             local cache_status = response.headers["X-Cache-Status"]
-            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-            assert(response.status == 404)
-
-            local proxy_client2 = helpers.proxy_client()
-            local response2 = proxy_client2:get("/404", {
-            headers = {
-                host = "test1.com"
-            }
-            })
-
-            local cache_status = response2.headers["X-Cache-Status"]
-            assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
-            assert(response2.status == 404)
+            assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
         end)
 
         describe("when request has Cache-Control", function()
@@ -253,7 +240,7 @@ for _, strategy in helpers.each_strategy() do
             end)
 
             it("should not cache default response code(404)", function()
-                local response1 = proxy_client:get("/notfound", {
+                local response1 = proxy_client:get("/status/404", {
                     headers = {
                         host = "test1.com",
                         ['Cache-Control'] = "max-age=400"
@@ -261,17 +248,17 @@ for _, strategy in helpers.each_strategy() do
                 })
 
                 local cache_status = assert.response(response1).has.header("X-Cache-Status")
-                assert(cache_status == 'MISS', "'X-Cache-Status' must be 'MISS'")
+                assert(cache_status == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
                 assert(404 == response1["status"], "expected 404 from status")
                 local proxy_client2 = helpers.proxy_client()
-                local response2 = proxy_client2:get("/notfound", {
+                local response2 = proxy_client2:get("/status/404", {
                     headers = {
                         host = "test1.com"
                     }
                 })
 
                 local cache_status2 = assert.response(response2).has.header("X-Cache-Status")
-                assert(cache_status2 == 'MISS', "'X-Cache-Status' must be 'MISS'")
+                assert(cache_status2 == 'BYPASS', "'X-Cache-Status' must be 'BYPASS'")
                 assert(404 == response2["status"], "expected 404 from status")
             end)
 
