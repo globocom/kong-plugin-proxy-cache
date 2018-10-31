@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.3.0 - 2018-10-31
+### Fixed
+- Fix issue #1. The body_filter should not set the `X-Cache-Status` header.
+
 ## 1.3.0 - 2018-10-30
 ### Added
 - `max_idle_timeout` and `pool_size` as schema
