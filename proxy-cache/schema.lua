@@ -26,7 +26,7 @@ return {
             default = 300,
             required = true
         },
-        cache_control = {type = "boolean", default = false},
+        cache_control = {type = "boolean", default = true},
         redis = {
             type = "table",
             schema = {
