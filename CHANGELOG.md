@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.3.3 - 2018-11-12
+### Fixed
+- error `API disabled in the current context` when `Cache-Control` is `true`
+
 ## 1.3.2 - 2018-11-07
 ### Changed
 - the default value for `cache_control` because the RFC behavior must be enabled by default
