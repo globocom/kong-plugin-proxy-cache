@@ -25,6 +25,7 @@ for _, strategy in helpers.each_strategy() do
             name = "proxy-cache",
             route_id = route1.id,
             config = {
+                cache_control = false,
                 redis = {
                     host = "localhost"
                 }
@@ -53,6 +54,7 @@ for _, strategy in helpers.each_strategy() do
             name = "proxy-cache",
             route_id = route3.id,
             config = {
+                cache_control = false,
                 redis = {
                     host = "localhost"
                 },
