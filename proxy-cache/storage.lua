@@ -1,4 +1,4 @@
-local redis = require "resty.redis"
+local redis_connector = require("resty.redis.connector")
 
 local _M = {}
 
@@ -10,43 +10,34 @@ function _M:new(o)
 end
 
 function _M:set_config(config)
-    self.config = config or {}
+    self.connector = redis_connector.new({
+        host = config.redis.host,
+        port = config.redis.port,
+        password = config.redis.password,
+        db = config.redis.database,
+        read_timeout = config.redis.timeout,
+        keepalive_timeout = config.redis.max_idle_timeout,
+        keepalive_poolsize = config.redis.pool_size
+    })
 end
 
 function _M:connect()
-    self.red = redis:new()
-    self.red:set_timeout(self.config.redis.timeout)
-    local ok, err = self.red:connect(self.config.redis.host, self.config.redis.port)
-    if not ok then
+    local red, err = self.connector:connect()
+    if red == nil then
         ngx.log(ngx.ERR, "failed to connect to Redis: ", err)
         return false
     end
-    local pass = self.config.redis.password
-    if pass ~= nil and string.len(pass) > 0 then
-        local ok, err = self.red:auth(pass)
-        if not ok then
-            ngx.log(ngx.ERR, "failed to authenticate: ", err)
-            return false
-        end
-    end
-    local db = self.config.redis.database
-    if db > 0 then
-        local ok, err = self.red:select(db)
-        if not ok then
-            ngx.log(ngx.ERR, "failed to select database: ", err)
-            return false
-        end
-    end
+    self.red = red
     return true
 end
 
 function _M:close()
-    local ok, err = self.red:set_keepalive(self.config.max_idle_timeout, self.config.pool_size)
+    local ok, err = self.connector:set_keepalive(self.red)
     if not ok then
         ngx.log(ngx.ERR, "failed to set keepalive: ", err)
-        return nil, err
+        return false
     end
-    return self.red
+    return true
 end
 
 function _M:set(key, value, expire_time)
