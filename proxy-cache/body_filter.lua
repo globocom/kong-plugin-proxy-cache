@@ -30,14 +30,15 @@ local function filter_headers(headers)
 end
 
 local function async_update_cache(config, cache_key, body)
+    local cache = Cache:new()
+    cache:set_config(config)
+
+    local cache_ttl = cache:cache_ttl()
     local headers = ngx.resp.get_headers(0, true)
     local status = ngx.status
     ngx.timer.at(0, function(premature)
-        local cache = Cache:new()
         local storage = Storage:new()
-        cache:set_config(config)
         storage:set_config(config)
-        local cache_ttl = cache:cache_ttl()
         if cache_ttl ~= nil then
             local cache_value = Encoder.encode(status, body, filter_headers(headers))
             storage:set(cache_key, cache_value, cache_ttl)
