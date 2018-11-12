@@ -298,7 +298,8 @@ sudo chown -R vagrant /usr/local
 
 # Install lua packages
 git clone https://github.com/Kong/kong.git /kong
-export LUA_DEPENDENCIES="busted luacheck lua-llthreads2"
+git config --global url."https://".insteadOf git://
+export LUA_DEPENDENCIES="busted luacheck lua-llthreads2 lua-resty-redis-connector"
 echo $LUA_DEPENDENCIES | xargs -n 1 sudo luarocks install
 
 # Install Redis server

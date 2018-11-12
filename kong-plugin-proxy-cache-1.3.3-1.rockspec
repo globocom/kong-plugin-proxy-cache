@@ -21,5 +21,8 @@ build = {
       ["kong.plugins.proxy-cache.schema"] = "proxy-cache/schema.lua",
       ["kong.plugins.proxy-cache.storage"] = "proxy-cache/storage.lua",
       ["kong.plugins.proxy-cache.validators"] = "proxy-cache/validators.lua"
+   },
+   dependencies = {
+       "lua-resty-redis-connector == 0.07"
    }
 }
