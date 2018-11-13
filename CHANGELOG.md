@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
-## 1.4.0 - 2018-11-13
+## 2.0.0 - 2018-11-13
 ### Added
 - Add Redis Sentinel support
 
