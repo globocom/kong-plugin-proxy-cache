@@ -10,7 +10,7 @@ function _M:new(o)
 end
 
 function _M:set_config(config)
-    self.connector = redis_connector.new({
+    local redis_config = {
         host = config.redis.host,
         port = config.redis.port,
         password = config.redis.password,
@@ -18,7 +18,21 @@ function _M:set_config(config)
         read_timeout = config.redis.timeout,
         keepalive_timeout = config.redis.max_idle_timeout,
         keepalive_poolsize = config.redis.pool_size
-    })
+    }
+    if config.sentinel_master_name ~= nil and string.len(config.sentinel_master_name) > 0 then
+        redis_config.master_name = config.redis.sentinel_master_name
+        redis_config.role = config.redis.sentinel_role
+        local sentinels = config.redis.sentinels
+        redis_config.sentinels = {}
+        for sentinel in pairs(sentinels) do
+            local sentinel_host, sentinel_port = string.match(sentinel, "(%a*)[:](%d*)")
+            redis_config.sentinels[#redis_config.sentinels+1] = {
+                host = sentinel_host,
+                port = sentinel_port
+            }
+        end
+    end
+    self.connector = redis_connector.new(redis_config)
 end
 
 function _M:connect()

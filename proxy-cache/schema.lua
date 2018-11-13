@@ -32,6 +32,9 @@ return {
             schema = {
                 fields = {
                     host = {type = "string", required = true},
+                    sentinel_master_name = {type = "string", required = false},
+                    sentinel_role = {type = "string", required = false},
+                    sentinel_addresses = {type = "string", required = false},
                     port = {
                         type = "number",
                         func = server_port,
