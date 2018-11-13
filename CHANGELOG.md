@@ -9,22 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changes that have landed in master but are not yet released.
 
+## 1.4.0 - 2018-11-13
+### Added
+- Add Redis Sentinel support
+
+### Changed
+- Change the storage to use `pintsized/lua-resty-redis-connector` instead of `openresty/lua-resty-redis`
+
+### Fixed
+- Fix error `API disabled in the current context` when `Cache-Control` is `true`
+
 ## 1.3.3 - 2018-11-12
 ### Fixed
-- error `API disabled in the current context` when `Cache-Control` is `true`
+- Fix error `API disabled in the current context` when `Cache-Control` is `true`
 
 ## 1.3.2 - 2018-11-07
 ### Changed
-- the default value for `cache_control` because the RFC behavior must be enabled by default
+- Change the default value for `cache_control` because the RFC behavior must be enabled by default
 
 ## 1.3.1 - 2018-10-31
 ### Fixed
-- Fix issue #1. The body_filter should not set the `X-Cache-Status` header.
+- Change the body_filter should not set the `X-Cache-Status` header.
 
 ## 1.3.0 - 2018-10-30
 ### Added
-- `max_idle_timeout` and `pool_size` as schema
-- filter to remove hop-by-hop headers
+- Add `max_idle_timeout` and `pool_size` as schema
+- Add filter to remove hop-by-hop headers
 
 ### Changed
 - Improves performance
@@ -54,25 +64,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.2.0 - 2018-10-15
 ### Fixed
-- `Cache-Control` was implemented incorrectly. It was respecting the client header instead of the upstream header.
+- The `Cache-Control` was implemented incorrectly. It was respecting the client header instead of the upstream header.
 
 ### Changed
 - Change default `response_code` to `200`, `301` and `302` like the nginx default config.
 
 ### Removed
-- `REFRESH` from `X-Cache-Status`.
-- `Cache-Control: no-cache` validation on access.
+- Remove `REFRESH` from `X-Cache-Status`.
+- Remove `Cache-Control: no-cache` validation on access.
 
 ## 1.1.0 - 2018-10-09
 ### Added
-- `ngx.host` was added to compose cache key.
+- The `ngx.host` was added to compose cache key.
 
 ### Fixed
 - The cache key composition considered only the last nginx variable.
 
 ## 1.0.1 - 2018-10-04
-### Changed
-- Error handling on plugin exceptions.
+### Added
+- Add error handling on plugin exceptions.
 
 ## 1.0.0 - 2018-10-03
 ### Added
