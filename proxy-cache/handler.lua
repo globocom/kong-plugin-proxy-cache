@@ -6,7 +6,7 @@ local header_filter = require 'kong.plugins.proxy-cache.header_filter'
 local ProxyCaching = BasePlugin:extend()
 
 ProxyCaching.PRIORITY = 1006
-ProxyCaching.VERSION = '1.3.3'
+ProxyCaching.VERSION = '2.0.0'
 
 function ProxyCaching:new()
     ProxyCaching.super.new(self, "proxy-cache")
