@@ -51,6 +51,9 @@ Here's a list of all the settings which can be used in this plugin:
 | **redis.timeout**  | 2000          | Connection timeout to use for Redis connection
 | redis.password |               | Password to use for Redis connection
 | **redis.database** | 0             | Database to use for Redis connection
+| redis.sentinel_master_name  |           | Sentinel master name to use for Redis connection. Defining this value implies using Redis Sentinel
+| redis.sentinel_role         |           | Sentinel role to use for Redis connection
+| redis.sentinel_addresses    |           | Sentinel address to use for Redis connection
 | **redis.max_idle_timeout** | 10000       | maximal idle timeout (in ms) for keep alive the Redis connection
 | **redis.pool_size** | 1000       | maximal pool size by Redis connection
 
