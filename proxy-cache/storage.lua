@@ -19,17 +19,20 @@ function _M:set_config(config)
         keepalive_timeout = config.redis.max_idle_timeout,
         keepalive_poolsize = config.redis.pool_size
     }
-    if config.sentinel_master_name ~= nil and string.len(config.sentinel_master_name) > 0 then
-        redis_config.master_name = config.redis.sentinel_master_name
+    local sentinel_master_name = config.redis.sentinel_master_name
+    if sentinel_master_name ~= nil and string.len(sentinel_master_name) > 0 then
+        redis_config.master_name = sentinel_master_name
         redis_config.role = config.redis.sentinel_role
-        local sentinels = config.redis.sentinels
-        redis_config.sentinels = {}
-        for sentinel in pairs(sentinels) do
-            local sentinel_host, sentinel_port = string.match(sentinel, "(%a*)[:](%d*)")
-            redis_config.sentinels[#redis_config.sentinels+1] = {
-                host = sentinel_host,
-                port = sentinel_port
-            }
+        local sentinels = config.redis.sentinel_addresses
+        if sentinels then
+            redis_config.sentinels = {}
+            for _, sentinel in ipairs(sentinels) do
+                local sentinel_host, sentinel_port = string.match(sentinel, "(.*)[:](%d*)")
+                redis_config.sentinels[#redis_config.sentinels+1] = {
+                    host = sentinel_host,
+                    port = sentinel_port
+                }
+            end
         end
     end
     self.connector = redis_connector.new(redis_config)
