@@ -31,7 +31,7 @@ return {
             type = "table",
             schema = {
                 fields = {
-                    host = {type = "string", required = true},
+                    host = {type = "string", required = false},
                     sentinel_master_name = {type = "string", required = false},
                     sentinel_role = {type = "string", required = false, default = "master"},
                     sentinel_addresses = {type = "array", required = false},
